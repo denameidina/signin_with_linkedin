@@ -14,8 +14,7 @@ class LinkedinWeb implements LinkedinCore {
   Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetAuthToken? onGetAuthToken,
-    OnGetUserProfile? onGetUserProfile,
+    OnGetCode? onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async {
@@ -35,8 +34,7 @@ class LinkedinWeb implements LinkedinCore {
         }
         authorizeUser(
           data,
-          onGetAuthToken: onGetAuthToken,
-          onGetUserProfile: onGetUserProfile,
+          onGetCode: onGetCode,
           onSignInError: onSignInError,
         );
       }

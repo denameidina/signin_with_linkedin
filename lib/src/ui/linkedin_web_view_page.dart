@@ -4,22 +4,17 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../signin_with_linkedin.dart';
 import '../core/authorize_user.dart';
 
-typedef OnGetAuthToken = void Function(LinkedInAccessToken data);
-typedef OnGetUserProfile = void Function(
-  LinkedInAccessToken tokenData,
-  LinkedInUser user,
-);
+typedef OnGetCode = void Function(String code);
+
 typedef OnSignInError = void Function(LinkedInError error);
 
 /// Web view page that handles url navigation and get the auth code when user
 /// sign in successfully and then call access token and user profile API.
 class LinkedInWebViewPage extends StatefulWidget {
-  final OnGetUserProfile? onGetUserProfile;
   final PreferredSizeWidget? appBar;
 
   const LinkedInWebViewPage({
     super.key,
-    required this.onGetUserProfile,
     this.appBar,
   });
 
@@ -55,7 +50,6 @@ class _LinkedInWebViewPageState extends State<LinkedInWebViewPage> {
   Future<void> _manageBack(NavigationRequest request) async {
     final data = await authorizeUser(
       request.url,
-      onGetUserProfile: widget.onGetUserProfile,
     );
     if (mounted && data != null) Navigator.of(context).pop(data);
   }

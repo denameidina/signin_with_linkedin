@@ -1,9 +1,12 @@
 library signin_with_linkedin;
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'signin_with_linkedin.dart';
 import 'src/helper/linkedin_core.dart';
+import 'src/models/linkedin_profile.dart';
 
 export 'src/core/linkedin_api_handler.dart';
 export 'src/models/linked_in_error.dart';
@@ -20,16 +23,14 @@ final class SignInWithLinkedIn {
 
   /// Sign in with LinkedIn.
   ///
-  /// Provide callback [onGetAuthToken] to get access token related data
-  /// Provide callback [onGetUserProfile] if you want to get user profile data
+  /// Provide callback [onGetCode] to get code from linkedin
   /// Provide callback [onSignInError] if you want to access error
   ///
   /// Customize the [appBar] for LinkedIn web view page
   static Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetAuthToken? onGetAuthToken,
-    OnGetUserProfile? onGetUserProfile,
+    OnGetCode? onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async {
@@ -37,8 +38,7 @@ final class SignInWithLinkedIn {
     _linkedinCore.signIn(
       context,
       config: config,
-      onGetAuthToken: onGetAuthToken,
-      onGetUserProfile: onGetUserProfile,
+      onGetCode: onGetCode,
       onSignInError: onSignInError,
     );
   }
@@ -46,5 +46,44 @@ final class SignInWithLinkedIn {
   /// Logout from LinkedIn account
   static Future<bool> logout() async {
     return _linkedinCore.logout();
+  }
+
+  static Future<LinkedInAccessToken?> getAccessToken(
+    String code, {
+    OnSignInError? onSignInError,
+  }) async {
+    try {
+      return LinkedInApi.instance.getAccessToken(code: code);
+    } catch (e, stackTrace) {
+      log(e.toString(), stackTrace: stackTrace);
+      final error =
+          e is LinkedInError ? e : LinkedInError(message: e.toString());
+      onSignInError?.call(error);
+      return null;
+    }
+  }
+
+  static Future<LinkedinProfile?> getProfile(
+    String code, {
+    OnSignInError? onSignInError,
+  }) async {
+    try {
+      final accessToken =
+          await getAccessToken(code, onSignInError: onSignInError);
+      if (accessToken == null) return null;
+
+      final user = await LinkedInApi.instance.getUserInfo(
+        tokenType: accessToken.tokenType ?? '',
+        token: accessToken.accessToken ?? '',
+      );
+
+      return LinkedinProfile(accessToken: accessToken, user: user);
+    } catch (e, stackTrace) {
+      log(e.toString(), stackTrace: stackTrace);
+      final error =
+          e is LinkedInError ? e : LinkedInError(message: e.toString());
+      onSignInError?.call(error);
+      return null;
+    }
   }
 }

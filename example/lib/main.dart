@@ -56,10 +56,8 @@ class _SignInWithLinkedInPageState extends State<SignInWithLinkedInPage> {
                 SignInWithLinkedIn.signIn(
                   context,
                   config: _linkedInConfig,
-                  onGetUserProfile: (tokenData, user) {
-                    log('Auth token data: ${tokenData.toJson()}');
-                    log('LinkedIn User: ${user.toJson()}');
-                    setState(() => _linkedInUser = user);
+                  onGetCode: (code) {
+                    log('LinkedIn Code: $code');
                   },
                   onSignInError: (error) {
                     log('Error on sign in: $error');
@@ -67,22 +65,6 @@ class _SignInWithLinkedInPageState extends State<SignInWithLinkedInPage> {
                 );
               },
               child: const Text('Sign in with LinkedIn'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                SignInWithLinkedIn.signIn(
-                  context,
-                  config: _linkedInConfig,
-                  onGetAuthToken: (data) {
-                    log('Auth token data: ${data.toJson()}');
-                  },
-                  onSignInError: (error) {
-                    log('Error on sign in: $error');
-                  },
-                );
-              },
-              child: const Text('Get Auth token from LinkedIn'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(

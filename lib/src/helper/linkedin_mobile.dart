@@ -9,8 +9,7 @@ class LinkedinMobile implements LinkedinCore {
   Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetAuthToken? onGetAuthToken,
-    OnGetUserProfile? onGetUserProfile,
+    OnGetCode? onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async {
@@ -19,15 +18,13 @@ class LinkedinMobile implements LinkedinCore {
       MaterialPageRoute(
         builder: (context) => LinkedInWebViewPage(
           appBar: appBar,
-          onGetUserProfile: onGetUserProfile,
         ),
         fullscreenDialog: true,
       ),
     );
-    if (result is LinkedInAccessToken) {
-      onGetAuthToken?.call(result);
-    } else if (result is List) {
-      onGetUserProfile?.call(result[0], result[1]);
+
+    if (result is String) {
+      onGetCode?.call(result);
     } else if (result is LinkedInError) {
       onSignInError?.call(result);
     }
