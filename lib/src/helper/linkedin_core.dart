@@ -13,7 +13,7 @@ class LinkedinCore {
   Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetCode? onGetCode,
+    required OnGetCode onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async =>

@@ -4,13 +4,11 @@ import 'package:uuid/uuid.dart';
 /// for user authorization
 final class LinkedInConfig {
   final String clientId;
-  final String clientSecret;
   final String redirectUrl;
   final List<String> scope;
 
   LinkedInConfig({
     required this.clientId,
-    required this.clientSecret,
     required this.redirectUrl,
     required this.scope,
   });

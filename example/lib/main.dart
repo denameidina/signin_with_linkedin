@@ -35,7 +35,6 @@ class _SignInWithLinkedInPageState extends State<SignInWithLinkedInPage> {
   // Modify the "scope" below as per your need
   final _linkedInConfig = LinkedInConfig(
     clientId: '<<CLIENT ID>>',
-    clientSecret: '<<CLIENT SECRET>>',
     redirectUrl: '<<REDIRECT URL>>',
     scope: ['openid', 'profile', 'email'],
   );

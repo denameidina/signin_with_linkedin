@@ -11,12 +11,16 @@ typedef OnSignInError = void Function(LinkedInError error);
 /// Web view page that handles url navigation and get the auth code when user
 /// sign in successfully and then call access token and user profile API.
 class LinkedInWebViewPage extends StatefulWidget {
-  final PreferredSizeWidget? appBar;
-
   const LinkedInWebViewPage({
     super.key,
     this.appBar,
+    required this.onGetCode,
+    this.onSignInError,
   });
+
+  final PreferredSizeWidget? appBar;
+  final OnGetCode onGetCode;
+  final OnSignInError? onSignInError;
 
   @override
   State<LinkedInWebViewPage> createState() => _LinkedInWebViewPageState();
@@ -48,10 +52,12 @@ class _LinkedInWebViewPageState extends State<LinkedInWebViewPage> {
   }
 
   Future<void> _manageBack(NavigationRequest request) async {
-    final data = await authorizeUser(
+    await authorizeUser(
       request.url,
+      onGetCode: widget.onGetCode,
+      onSignInError: widget.onSignInError,
     );
-    if (mounted && data != null) Navigator.of(context).pop(data);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override

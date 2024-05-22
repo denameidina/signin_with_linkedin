@@ -14,7 +14,10 @@ final class LinkedInApi {
 
   late LinkedInConfig config;
 
-  Future<LinkedInAccessToken> getAccessToken({required String code}) async {
+  Future<LinkedInAccessToken> getAccessToken({
+    required String code,
+    required String clientSecret,
+  }) async {
     final response = await _client.post(
       Uri(
         scheme: 'https',
@@ -25,7 +28,7 @@ final class LinkedInApi {
         'grant_type': 'authorization_code',
         'code': code,
         'client_id': config.clientId,
-        'client_secret': config.clientSecret,
+        'client_secret': clientSecret,
         'redirect_uri': config.redirectUrl,
       },
     );

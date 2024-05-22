@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 
 import 'signin_with_linkedin.dart';
 import 'src/helper/linkedin_core.dart';
-import 'src/models/linkedin_profile.dart';
 
 export 'src/core/linkedin_api_handler.dart';
 export 'src/models/linked_in_error.dart';
 export 'src/models/linkedin_access_token.dart';
 export 'src/models/linkedin_config.dart';
 export 'src/models/linkedin_locale.dart';
+export 'src/models/linkedin_profile.dart';
 export 'src/models/linkedin_user.dart';
 export 'src/ui/linkedin_web_view_page.dart';
 
@@ -30,7 +30,7 @@ final class SignInWithLinkedIn {
   static Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetCode? onGetCode,
+    required OnGetCode onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async {
@@ -48,12 +48,16 @@ final class SignInWithLinkedIn {
     return _linkedinCore.logout();
   }
 
-  static Future<LinkedInAccessToken?> getAccessToken(
-    String code, {
+  static Future<LinkedInAccessToken?> getAccessToken({
+    required String code,
+    required String clientSecret,
     OnSignInError? onSignInError,
   }) async {
     try {
-      return LinkedInApi.instance.getAccessToken(code: code);
+      return LinkedInApi.instance.getAccessToken(
+        code: code,
+        clientSecret: clientSecret,
+      );
     } catch (e, stackTrace) {
       log(e.toString(), stackTrace: stackTrace);
       final error =
@@ -63,13 +67,17 @@ final class SignInWithLinkedIn {
     }
   }
 
-  static Future<LinkedinProfile?> getProfile(
-    String code, {
+  static Future<LinkedinProfile?> getProfile({
+    required String code,
+    required String clientSecret,
     OnSignInError? onSignInError,
   }) async {
     try {
-      final accessToken =
-          await getAccessToken(code, onSignInError: onSignInError);
+      final accessToken = await getAccessToken(
+        code: code,
+        clientSecret: clientSecret,
+        onSignInError: onSignInError,
+      );
       if (accessToken == null) return null;
 
       final user = await LinkedInApi.instance.getUserInfo(

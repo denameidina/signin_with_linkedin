@@ -9,25 +9,21 @@ class LinkedinMobile implements LinkedinCore {
   Future<void> signIn(
     BuildContext context, {
     required LinkedInConfig config,
-    OnGetCode? onGetCode,
+    required OnGetCode onGetCode,
     OnSignInError? onSignInError,
     PreferredSizeWidget? appBar,
   }) async {
     LinkedInApi.instance.config = config;
-    final result = await Navigator.of(context).push(
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => LinkedInWebViewPage(
           appBar: appBar,
+          onGetCode: onGetCode,
+          onSignInError: onSignInError,
         ),
         fullscreenDialog: true,
       ),
     );
-
-    if (result is String) {
-      onGetCode?.call(result);
-    } else if (result is LinkedInError) {
-      onSignInError?.call(result);
-    }
   }
 
   @override

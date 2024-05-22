@@ -6,14 +6,12 @@ import 'extensions.dart';
 /// Authorize the user and returns either auth token or profile details.
 Future<dynamic> authorizeUser(
   String url, {
-  OnGetCode? onGetCode,
+  required OnGetCode onGetCode,
   OnSignInError? onSignInError,
 }) async {
   try {
-    if (onGetCode != null) {
-      onGetCode.call(url.authCode);
-      return url.authCode;
-    }
+    onGetCode.call(url.authCode);
+    return url.authCode;
   } catch (e, stackTrace) {
     log(e.toString(), stackTrace: stackTrace);
     final error = e is LinkedInError ? e : LinkedInError(message: e.toString());
